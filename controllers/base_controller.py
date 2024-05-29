@@ -1,5 +1,9 @@
-
+import os
 from typing import List
+from uuid import uuid4
+
+import aiofiles
+
 from schemas import QueryFilter
 from services.result import Result
 from sqlalchemy.orm import Session
@@ -39,8 +43,18 @@ class BaseController:
             print(ex)
             return Result.fail(ex)
 
-    async def create(self, item_in) -> Result:
+    async def create(self, item_in, image=None) -> Result:
         try:
+            if image:
+                dir_path = "./static/images/"
+                if not os.path.exists(dir_path):
+                    os.makedirs(dir_path)
+                image_filename = f"{uuid4()}{image.filename}"
+                image_path = os.path.join(dir_path, image_filename)
+                async with aiofiles.open(image_path, 'wb') as out_file:
+                    content = await image.read()
+                    await out_file.write(content)
+                item_in.image_path = image_path
             item = self.default_repo.create(self.db, item_in)
             return Result.ok(item)
         except Exception as ex:

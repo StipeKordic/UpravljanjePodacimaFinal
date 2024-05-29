@@ -10,9 +10,9 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    username = Column(String, unique=True, nullable=False)
-    email = Column(String, unique=True, nullable=False)
-    password = Column(String, nullable=False)
+    username = Column(String(255), unique=True, nullable=False)
+    email = Column(String(255), unique=True, nullable=False)
+    password = Column(String(255), nullable=False)
     is_admin = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP(timezone=True), server_default=text("now()"))
 
@@ -21,7 +21,7 @@ class AdType(Base):
     __tablename__ = "ad_types"
 
     id = Column(Integer, primary_key=True)
-    ad_type = Column(String, nullable=False)
+    ad_type = Column(String(255), nullable=False)
     price = Column(Float, nullable=False)
     description = Column(Text)
 
@@ -30,11 +30,12 @@ class Ad(Base):
     __tablename__ = "ads"
 
     id = Column(Integer, primary_key=True)
-    title = Column(String, nullable=False)
+    title = Column(String(255), nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     ad_type_id = Column(Integer, ForeignKey("ad_types.id"), nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), server_default=text("now()"))
-    category = Column(String)
+    image_path = Column(String(255))
+    category = Column(String(255))
 
     @property
     def likes_count(self):
@@ -59,5 +60,5 @@ class Comment(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     ad_id = Column(Integer, ForeignKey("ads.id"), nullable=False)
-    comment = Column(String)
+    comment = Column(String(255))
     created_at = Column(TIMESTAMP(timezone=True), server_default=text("now()"))

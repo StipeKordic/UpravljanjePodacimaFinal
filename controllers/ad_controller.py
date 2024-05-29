@@ -3,6 +3,9 @@ from controllers.base_controller import BaseController
 from models import Ad
 from repositories.ad_repository import AdRepository
 from services.result import Result
+import aiofiles
+from uuid import uuid4
+from fastapi import UploadFile, HTTPException
 
 
 class AdController(BaseController):

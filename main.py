@@ -3,13 +3,14 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
-from routes import auth_routes, ad_type_routes, ad_routes
+from routes import auth_routes, ad_type_routes, ad_routes, home_routes
 
 
 app = FastAPI()
 app.include_router(auth_routes.auth_router)
 app.include_router(ad_type_routes.ad_type_router)
 app.include_router(ad_routes.ad_router)
+app.include_router(home_routes.home_router)
 
 origins = {
     "http://localhost"
