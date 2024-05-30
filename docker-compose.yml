@@ -19,15 +19,13 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: localhost
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
-  mysql:
-    image: mysql:latest
+  postgres:
+    image: postgres
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: lozinka
+      POSTGRES_PASSWORD: lozinka
     ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
+      - "5433:5432"  # Map PostgreSQL port 5432 to host port 5433
 
   myapp:
     build:
@@ -37,13 +35,11 @@ services:
     depends_on:
       - redis
       - kafka
-      - mysql
+      - postgres  # Depend on PostgreSQL service
     environment:
-      - MYSQL_HOST=mysql
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=lozinka
-      - MYSQL_DB=mydatabase
+      - DB_TYPE=postgresql  # Set the database type to PostgreSQL
+      - DB_HOST=postgres     # PostgreSQL service name
+      - DB_USER=postgres
+      - DB_PASSWORD=lozinka
+      - DB_NAME=mydatabase
     command: bash -c "python -m app.create_admin && uvicorn main:app --host 0.0.0.0 --port 5000"
-
-volumes:
-  mysql_data:

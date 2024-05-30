@@ -18,5 +18,8 @@ COPY . /app/
 # Expose the port on which your FastAPI application runs
 EXPOSE 5000
 
+# Initialize databases using Alembic
+RUN alembic upgrade head
+
 # Command to run the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
