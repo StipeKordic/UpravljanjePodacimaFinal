@@ -21,13 +21,6 @@ auth_router = APIRouter(
 templates = Jinja2Templates(directory="templates")
 
 
-@auth_router.get("/signup")
-def signup_get(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
-
-@auth_router.get("/login")
-def login_get(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
 @auth_router.post("/signup", response_model=UserOut)
 async def create_user(user: UserCreate = Depends(UserCreate), db: Session = Depends(get_db)):
 
@@ -50,7 +43,7 @@ async def create_user(user: UserCreate = Depends(UserCreate), db: Session = Depe
     db.commit()
     db.refresh(new_user)
 
-    return RedirectResponse(url="/auth/login", status_code=status.HTTP_303_SEE_OTHER)
+    return new_user
 @auth_router.post("/login")
 def login_user(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
 
@@ -66,10 +59,7 @@ def login_user(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Sess
 
     access_token = oauth2.create_access_token(data)
 
-    response = RedirectResponse(url="/home", status_code=status.HTTP_303_SEE_OTHER)
-    response.set_cookie(key="access_token", value=access_token, httponly=True)
     return {"access_token": access_token, "token_type": "bearer"}
-    return response
 
 @auth_router.get("/logout")
 def logout_user(token: str = Depends(oauth2.oauth2_scheme)):

@@ -9,6 +9,10 @@ from controllers.ad_controller import AdController
 from oauth2 import get_current_user
 from services.result import Result
 from uuid import uuid4
+from confluent_kafka import Producer
+
+# Kreiranje Kafka producenta
+producer = Producer({'bootstrap.servers': 'localhost:9092'})
 
 ad_router = APIRouter(
     prefix="/ad",
@@ -57,6 +61,8 @@ def like_ad(ad_id: int, db: Session = Depends(get_db), user: TokenData = Depends
     if ad:
         if ad.value.user.id != user.user_id:
             result: Result = AdController(db).like_ad(ad_id, user.user_id)
+            kafka_message = f"User {user.user_id} liked ad {ad_id}"
+            producer.produce('likes', value=kafka_message.encode('utf-8'))
         else:
             raise HTTPException(status_code=403, detail="You can not like your own post")
     else:
