@@ -28,7 +28,7 @@ def get_ad_type(ad_type_id: int, db: Session = Depends(get_db), user: TokenData 
 
 
 @ad_type_router.post("/", response_model=AdType)
-async def create_ad_type(ad_type: AdType, db: Session = Depends(get_db), user: TokenData = Depends(get_current_user)):
+async def create_ad_type(ad_type: AdType = Depends(AdType), db: Session = Depends(get_db), user: TokenData = Depends(get_current_user)):
     if user.is_admin:
         result: Result = await AdTypeController(db).create(ad_type)
         return result.item
@@ -37,7 +37,7 @@ async def create_ad_type(ad_type: AdType, db: Session = Depends(get_db), user: T
 
 
 @ad_type_router.put("/{ad_type_id}", response_model=AdType)
-def update_ad_type(ad_type_id: int, ad_type: AdType, db: Session = Depends(get_db), user: TokenData = Depends(get_current_user)):
+def update_ad_type(ad_type_id: int, ad_type: AdType = Depends(AdType), db: Session = Depends(get_db), user: TokenData = Depends(get_current_user)):
     if user.is_admin:
         result: Result = AdTypeController(db).update(ad_type, ad_type_id)
         return result.item

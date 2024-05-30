@@ -28,7 +28,7 @@ def get_comment(comment_id: int, db: Session = Depends(get_db), user: TokenData 
 
 
 @comment_router.post("/", response_model=Comment)
-async def create_comment(comment: Comment, db: Session = Depends(get_db), user: TokenData = Depends(get_current_user)):
+async def create_comment(comment: Comment = Depends(Comment), db: Session = Depends(get_db), user: TokenData = Depends(get_current_user)):
     comment_data = dict(comment)
     comment_data["user_id"] = user.user_id
     comment_create = CommentCreate(**comment_data)
@@ -38,7 +38,7 @@ async def create_comment(comment: Comment, db: Session = Depends(get_db), user: 
 
 
 @comment_router.put("/{comment_id}", response_model=Comment)
-def update_comment(comment_id: int, comment: Comment, db: Session = Depends(get_db), user: TokenData = Depends(get_current_user)):
+def update_comment(comment_id: int, comment: Comment = Depends(Comment), db: Session = Depends(get_db), user: TokenData = Depends(get_current_user)):
     result: Result = CommentController(db).update(comment, comment_id)
     return result.item
 

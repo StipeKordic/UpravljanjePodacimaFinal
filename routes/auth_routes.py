@@ -68,6 +68,7 @@ def login_user(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Sess
 
     response = RedirectResponse(url="/home", status_code=status.HTTP_303_SEE_OTHER)
     response.set_cookie(key="access_token", value=access_token, httponly=True)
+    return {"access_token": access_token, "token_type": "bearer"}
     return response
 
 @auth_router.get("/logout")

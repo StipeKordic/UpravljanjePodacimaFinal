@@ -1,4 +1,5 @@
-from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import relationship, backref
 
 from database import Base
 from sqlalchemy import Column, Integer, Text, String, Float, ForeignKey, Boolean, PrimaryKeyConstraint
@@ -37,7 +38,12 @@ class Ad(Base):
     image_path = Column(String(255))
     category = Column(String(255))
 
-    @property
+    user = relationship("User", backref=backref("ads", lazy="dynamic"))
+    ad_type = relationship("AdType", backref=backref("ads", lazy="dynamic"))
+    comments = relationship("Comment", backref=backref("ad", lazy="joined"))
+    likes = relationship("Like", backref=backref("ad", lazy="joined"))
+
+    @hybrid_property
     def likes_count(self):
         return len(self.likes)
 

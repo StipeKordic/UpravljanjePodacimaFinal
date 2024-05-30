@@ -13,7 +13,6 @@ class AdRepository(BaseRepository):
         result = session.execute(sql_stmt)
         return result.scalars().first()
 
-
     def like_ad(self, session: Session, ad_id: int, user_id:int):
         like = Like(ad_id=ad_id, user_id=user_id)
         session.add(like)

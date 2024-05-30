@@ -2,6 +2,7 @@ from fastapi import Form
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, Any, Tuple, Union
 from datetime import datetime
+from enum import Enum
 
 
 def form_body(cls):
@@ -23,6 +24,7 @@ class QueryFilter(BaseModel):
         return self.field, self.operator, self.value
 
 
+@form_body
 class AdType(BaseModel):
     ad_type: str
     description: str
@@ -48,6 +50,14 @@ class TokenData(BaseModel):
     user_id: int
     username: str
     is_admin: bool
+
+
+@form_body
+class PasswordChange(BaseModel):
+    old_password: str
+    password: str
+    confirm_password: str
+
 
 @form_body
 class UserCreate(BaseModel):
@@ -77,11 +87,34 @@ class UserOut(BaseModel):
     created_at: datetime
 
 
+class AdCategoryEnum(str, Enum):
+    TECHNOLOGY = "Technology"
+    MAKEUP = "Makeup"
+    STYLE = "Style"
+    FASHION = "Fashion"
+    AUTOMOBILES = "Automobiles"
+    HEALTH = "Health"
+    FITNESS = "Fitness"
+    FOOD = "Food"
+    TRAVEL = "Travel"
+    EDUCATION = "Education"
+    FINANCE = "Finance"
+    REAL_ESTATE = "Real Estate"
+    ENTERTAINMENT = "Entertainment"
+    SPORTS = "Sports"
+    BOOKS = "Books"
+    MUSIC = "Music"
+    MOVIES = "Movies"
+    GAMING = "Gaming"
+    HOME_DECOR = "Home Decor"
+    PETS = "Pets"
+
+
 @form_body
 class Ad(BaseModel):
     title: str
     ad_type_id: int
-    category: str
+    category: AdCategoryEnum
 
     model_config = {
         "json_schema_extra": {
@@ -98,9 +131,11 @@ class Ad(BaseModel):
 
 class AdOut(Ad):
     id: int
-    user_id: int
     created_at: datetime
     image_path: str
+    user: UserOut
+    ad_type: AdType
+    likes_count: int
 
 
 class AdCreate(Ad):
