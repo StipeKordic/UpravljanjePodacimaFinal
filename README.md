@@ -13,7 +13,7 @@ This project allows users to create and like ads. When a user registers, they ca
 
 #### 1. Clone repo on your machine
   ```bash
-  git clone https://github.com/StipeKordic/FreelanceFastAPI
+  git clone https://github.com/StipeKordic/UpravljanjePodacimaFinal
 ```
 
 #### 2. Create and configure .env file
