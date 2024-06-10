@@ -11,7 +11,7 @@ import redis
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
-r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+r = redis.Redis(host='redis', port=6379, decode_responses=True)
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")

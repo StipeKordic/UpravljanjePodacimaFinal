@@ -7,14 +7,14 @@ from confluent_kafka import Consumer, KafkaError
 
 def consume_kafka_messages():
     conf = {
-        'bootstrap.servers': 'localhost:9092',
+        'bootstrap.servers': 'kafka:9092',
         'group.id': 'mygroup',
         'auto.offset.reset': 'earliest'
     }
 
     consumer = Consumer(conf)
 
-    consumer.subscribe(['likes'])  # Pretplata na Kafka topic 'likes'
+    consumer.subscribe(['likes'])
 
     try:
         while True:
@@ -66,11 +66,17 @@ async def home():
 if __name__ == "__main__":
     import uvicorn
     from threading import Thread
+    import subprocess
+    import os
+    try:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        script_path = os.path.join(current_dir, "initial_setup.py")
+        subprocess.run(["python", script_path], check=True)
+    except Exception as e:
+        print(e)
 
-    # Pokretanje Kafka konzumenta u pozadini
     kafka_thread = Thread(target=consume_kafka_messages)
     kafka_thread.daemon = True
     kafka_thread.start()
 
-    # Pokretanje FastAPI servera
     uvicorn.run(app, host="0.0.0.0", port=5000)

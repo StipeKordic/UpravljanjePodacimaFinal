@@ -11,8 +11,7 @@ from services.result import Result
 from uuid import uuid4
 from confluent_kafka import Producer
 
-# Kreiranje Kafka producenta
-producer = Producer({'bootstrap.servers': 'localhost:9092'})
+producer = Producer({'bootstrap.servers': 'kafka:9092'})
 
 ad_router = APIRouter(
     prefix="/ad",
